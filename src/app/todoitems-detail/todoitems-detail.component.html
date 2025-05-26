@@ -1,0 +1,74 @@
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>IsComplete</th>
+      <th>UserId</th>
+      <th>Delete option</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of TodoItems">
+      <td>{{ item.id }}</td>
+      <td>{{ item.title }}</td>
+      <td>{{ item.isComplete }}</td>
+      <td>{{ item.userId }}</td>
+      <td>
+        <button (click)="deleteItem(item.id)" class="delete-btn">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<button (click)="showAddForm = true" *ngIf="!showAddForm" class="add-button">Add New</button>
+
+<!-- Add Form Section -->
+<div *ngIf="showAddForm" class="add-form-container">
+  <h4 class="form-heading">Add New Todo</h4>
+  <form (ngSubmit)="saveNewItem()" class="todo-form">
+
+    <!-- Title Input -->
+    <div class="form-group">
+      <label class="form-label">Title:</label>
+      <input [(ngModel)]="newItem.title"
+             name="title"
+             class="form-input"
+             placeholder="Enter title"
+             required
+             #titleInput="ngModel"
+             [pattern]="'.*\\S.*'" />
+      <div *ngIf="titleInput.invalid && titleInput.touched" class="form-error">
+        Title is required and cannot be empty or just spaces.
+      </div>
+    </div>
+
+    <!-- User Dropdown -->
+    <div class="form-group">
+      <label class="form-label">User:</label>
+      <select [(ngModel)]="newItem.userId"
+              name="userId"
+              class="form-select"
+              required
+              (click)="loadUsers()">
+        <option *ngFor="let user of users" [value]="user.id">
+          {{ user.fullName.length > 15 ? (user.fullName | slice: 0:15) + '...' : user.fullName }} (ID: {{ user.id }})
+        </option>
+      </select>
+    </div>
+
+    <!-- IsComplete Checkbox -->
+    <div class="form-group checkbox-group">
+      <label class="form-label">Is Complete:</label>
+      <input type="checkbox" [(ngModel)]="newItem.isComplete" name="isComplete" />
+    </div>
+
+
+    <div class="form-buttons">
+      <button type="submit" class="save-btn">Save</button>
+      <button type="button" (click)="showAddForm = false" class="cancel-btn">Cancel</button>
+    </div>
+
+  </form>
+</div>

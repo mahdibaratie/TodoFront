@@ -1,0 +1,104 @@
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Full Name</th>
+      <th>Phone Number</th>
+      <th>Age</th>
+      <th>Gender</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let person of Persons">
+      <td>{{ person.id }}</td>
+      <td>{{ person.fullName }}</td>
+      <td>{{ person.phoneNumber }}</td>
+      <td>{{ person.age }}</td>
+      <td>
+        {{
+        person.gender === 0
+        ? 'Male'
+        : person.gender === 1
+        ? 'Female'
+        : person.gender === 2
+        ? 'Unknown'
+        : ''
+        }}
+      </td>
+
+      <td>
+        <button (click)="deleteItem(person.id)" class="delete-btn">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<button (click)="showAddForm = true" *ngIf="!showAddForm" class="add-button">Add New</button>
+
+<!-- Add Form Section -->
+<div *ngIf="showAddForm" class="add-form-container">
+  <h4>Add New Person</h4>
+  <form (ngSubmit)="saveNewItem()" class="todo-form">
+    <!-- Full Name Input -->
+    <div class="form-group">
+      <label class="form-label">Full Name:</label>
+      <input [(ngModel)]="newItem.fullName"
+             name="fullName"
+             class="form-input"
+             placeholder="Enter full name"
+             required
+             #fullNameInput="ngModel"
+             [pattern]="'.*\\S.*'" />
+      <div *ngIf="fullNameInput.invalid && fullNameInput.touched" class="form-error">
+        Full Name is required and cannot be empty or just spaces.
+      </div>
+    </div>
+
+    <!-- Phone Input -->
+    <div class="form-group">
+      <label class="form-label">Phone:</label>
+      <input [(ngModel)]="newItem.phoneNumber"
+             name="phoneNumber"
+             class="form-input"
+             placeholder="Enter phone"
+             required
+             #phoneInput="ngModel"
+             pattern="^[0-9]*$" />
+      <div *ngIf="phoneInput.errors?.['required'] && phoneInput.touched" class="form-error">
+        Phone number is required.
+      </div>
+      <div *ngIf="phoneInput.errors?.['pattern'] && phoneInput.touched" class="form-error">
+        Only digits (0–9) are allowed.
+      </div>
+    </div>
+
+
+    <label>Age:</label>
+    <input type="number"
+           [(ngModel)]="newItem.age"
+           name="age"
+           required
+           min="0"
+           max="120"
+           #ageInput="ngModel" /><br />
+    <div *ngIf="ageInput.invalid && ageInput.touched" class="form-error">
+      Age must be between 0 and 120.
+    </div>
+
+
+
+    <label>Gender:</label>
+    <select [(ngModel)]="newItem.gender" name="gender" required>
+      <option [ngValue]="0">Male</option>
+      <option [ngValue]="1">Female</option>
+      <option [ngValue]="2">Unknown</option>
+    </select>
+
+
+
+    <button type="submit" class="save-btn">Save</button>
+    <button type="button" (click)="showAddForm = false" class="cancel-btn">Cancel</button>
+  </form>
+</div>
